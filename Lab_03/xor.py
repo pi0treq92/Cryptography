@@ -9,18 +9,15 @@ def prepare():
     plainFile = open('plain.txt', 'w+')
     orig = origFile.read()
     text = ''
-    sign = 1
     seq = []
     for i in range(len(orig)):
-            if orig[i].lower() in ascii_lowercase or orig[i] == ' ':
-                text += orig[i].lower()
-            if (text.__len__()) % 32 == 0:
-                seq.append(text+'\n')
-                text = ''
+        if orig[i].lower() in ascii_lowercase or orig[i] == ' ':
+            text += orig[i].lower()
+        if (text.__len__()) % 32 == 0:
+            seq.append(text+'\n')
+            text = ''
     plainFile.writelines(seq)
     plainFile.close()
-    print(text.__len__())
-
 
 def encrypt():
     keyFile = open('key.txt', 'r')
@@ -28,16 +25,16 @@ def encrypt():
     encryptFile = open('crypto.txt', 'w+')
     plain = plainFile.readlines()
     plainFile.close()
-    key = keyFile.read()
+    key = keyFile.read().lower()
     seq = []
     text = ''
     for i in range(len(plain)):
         if plain[i].__len__()>31:
             for j in range(len(key)):
-                plainSign = bin(ord(plain[i][j]))
-                keySign = bin(ord(key[j]))
-                y = int(plainSign, 2) ^ int(keySign, 2)
-                text+=bin(y)[2:].zfill(8) + ' '
+                plainSign = bin(ord(plain[i][j]))[2:].zfill(8)
+                keySign = bin(ord(key[j]))[2:].zfill(8)
+                y = bin(int(plainSign, 2) ^ int(keySign, 2))[2:].zfill(8)
+                text += y + ' '
             seq.append(text+'\n')
             text = ''
     encryptFile.writelines(seq)
@@ -73,7 +70,17 @@ def decrypt(table):
             klucz[i] = '00000000'
     return klucz
 
-
+def decrypting(binTable, decryptedBinKey):
+    text = ''
+    for i in range(len(binTable)):
+        for j in range(len(binTable[i])):
+            if decryptedBinKey[j] == '00111111':
+                text += '?'
+            else:
+                y = int(binTable[i][j], 2) ^ int(decryptedBinKey[j], 2)
+                text += chr(y)
+        text+='\n'
+    return text
 def cryptoanalysis():
     cryptoFile = open('crypto.txt', 'r')
     keyCrypto = open('key-crypto.txt', 'w')
@@ -81,26 +88,31 @@ def cryptoanalysis():
     crypto = cryptoFile.readlines()
     cryptoFile.close()
     binTable = []
-    bin = ''
+    binar = ''
     for i in range(len(crypto)):
         seq = []
         for j in range(len(crypto[i])):
             if crypto[i][j] != ' ':
                 if crypto[i][j] != '\n':
-                    bin += crypto[i][j]
+                    binar += crypto[i][j]
             else:
-                seq.append(bin)
-                bin = ''
+                seq.append(binar)
+                binar = ''
         binTable.append(seq)
     klucz = decrypt(binTable)
     decryptedKey = ''
+    decryptedKeyBin = []
     for key, value in klucz.items():
         try:
             decryptedKey += str(chr(value))
+            decryptedKeyBin.append(bin(value)[2:].zfill(8))
         except:
-            decryptedKey +='?'
+            decryptedKey += '?'
+            decryptedKeyBin.append(bin(ord('?'))[2:].zfill(8))
     print(decryptedKey)
     keyCrypto.write(decryptedKey)
+    text = decrypting(binTable, decryptedKeyBin)
+    decryptFile.write(text)
 
 
 def main():
