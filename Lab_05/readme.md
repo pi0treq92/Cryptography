@@ -1,6 +1,7 @@
 Zadania:
 
-    Przygotować plik personal.txt ze swoimi danymi osobowymi. Obliczyć wszystkie funkcje skrótu na tym pliku, wyniki zapisać do pliku hash.txt w kolejności coraz dłuższych skrótów.
+    Przygotować plik personal.txt ze swoimi danymi osobowymi. Obliczyć wszystkie funkcje skrótu na tym pliku, 
+    wyniki zapisać do pliku hash.txt w kolejności coraz dłuższych skrótów.
 
     Przygotować drugą wersje pliku z tymi samymi danymi osobowymi personal_.txt, różniącą się jedynie dodatkowym pustym wierszem na końcu. 
     Obliczyć wartość wszystkich funkcji skrótu dla obu wersji pliku połączonego z plikiem pdf wykładu hash.pdf (tzn. wykonać polecenia:
